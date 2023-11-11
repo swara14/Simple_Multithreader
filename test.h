@@ -11,8 +11,6 @@ int main(int argc, char **argv)
     printf("SPP nhi ho rahi\n");
     int rc = user_main(argc, argv);
     return rc;
-    
-    return 0;
 }
 
 
