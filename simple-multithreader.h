@@ -9,47 +9,32 @@
 
 int user_main(int argc, char **argv);
 
-struct ThreadArgs {
-  std::function<void(int)> lambda1D;
-  int low, high;
-};
+typedef struct {
+    int low;
+    int high;
+    std::function<void (int)> lambda1D;
 
-void* threadWorker(void *args) {
-    ThreadArgs *threadArgs = static_cast<ThreadArgs *>(args);
+} thread_args;
 
-    if (threadArgs->lambda1D) {
-        for (int i = threadArgs->low; i <= threadArgs->high; ++i) {
-            threadArgs->lambda1D(i);
-        }
-    }
-    return nullptr;
+void *thread_func(void *ptr) {
+    thread_args * t = ((thread_args *) ptr);
+    return NULL;
 }
 
-void parallel_for(int low, int high, std::function<void(int)> &&lambda, int numThreads) {
-    auto start_time = std::chrono::high_resolution_clock::now();
+void parallel_for(int low, int high, std::function<void(int)> &&lambda, int NTHREADS) {
+    pthread_t tid[NTHREADS];
+    thread_args args[NTHREADS];
+    int chunk = (high - low )/NTHREADS;
+    for (int i=0; i<NTHREADS; i++) {
+        args[i].low=i*chunk; 
+        args[i].high = (i == NTHREADS - 1) ? high : (i + 1) * chunk;  // Adjust the high value        
+        args[i].lambda1D = std :: move(lambda);
 
-    pthread_t *threads = new pthread_t[numThreads];
-
-    int range = (high - low + 1) / numThreads;
-
-    for (int i = 0; i < numThreads; ++i) {
-        ThreadArgs args;
-        args.lambda1D = std::move(lambda);
-        args.low = low + i * range;
-        args.high = (i == numThreads - 1) ? high : (low + (i + 1) * range - 1);
-
-        pthread_create(&threads[i], nullptr, threadWorker, &args);
+        pthread_create(&tid[i],NULL,thread_func,(void*) &args[i]);
     }
-
-    for (int i = 0; i < numThreads; ++i) {
-        pthread_join(threads[i], nullptr);
+    for (int i=0; i<NTHREADS; i++) {
+        pthread_join(tid[i] , NULL);
     }
-
-    delete[] threads;
-
-    auto end_time = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
-    std::cout << "Execution time: " << duration.count() << " microseconds\n";
 }
 
 int main(int argc, char **argv) {
