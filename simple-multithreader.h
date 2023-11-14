@@ -6,6 +6,8 @@
 #include <functional>
 #include <pthread.h>
 #include <chrono>
+#include <time.h>
+#include <sys/time.h>
 
 int user_main(int argc, char **argv);
 
@@ -39,10 +41,22 @@ void *thread_func_2D(void *ptr) {
     return NULL;
 }
 
+long get_time(){
+    struct timeval time, *address_time = &time;
+    if (gettimeofday(address_time, NULL) != 0) {
+        perror("Error in printing the time.");
+        exit(1);
+    }
+    long epoch_time = time.tv_sec * 1000;
+    return epoch_time + time.tv_usec / 1000;
+}
+
 void parallel_for(int low, int high, std::function<void(int)> &&lambda, int NTHREADS) {
     pthread_t tid[NTHREADS];
     thread_args_1D args[NTHREADS];
     int chunk = (high - low )/NTHREADS;
+
+    long start_time=get_time();
 
     for (int i=0; i<NTHREADS; i++) {
         args[i].low=i*chunk; 
@@ -53,6 +67,11 @@ void parallel_for(int low, int high, std::function<void(int)> &&lambda, int NTHR
     for (int i=0; i<NTHREADS; i++) {
         pthread_join(tid[i] , NULL);
     }
+
+    long end_time=get_time();
+
+    long t1 = end_time-start_time;
+    printf("Total execution time for vector: %ld\n", t1);
 }
 
 void parallel_for(int low1, int high1, int low2, int high2, std::function<void(int, int)> &&lambda, int NTHREADS){
@@ -60,6 +79,9 @@ void parallel_for(int low1, int high1, int low2, int high2, std::function<void(i
     thread_args_2D args[NTHREADS];
     int chunk1 = (high1 - low1 )/NTHREADS;
     int chunk2 = (high2 - low2) / NTHREADS;
+
+    long start_time=get_time();
+
     for (int i=0; i<NTHREADS; i++) {
         args[i].low1 =i*chunk1; 
         args[i].high1 = (i+1)*chunk1;
@@ -74,6 +96,10 @@ void parallel_for(int low1, int high1, int low2, int high2, std::function<void(i
         pthread_join(tid[i] , NULL);
     }
 
+    long end_time=get_time();
+    long t2=end_time-start_time;
+    printf("Total execution time for matrix: %ld\n", t2);
+
 }
 int main(int argc, char **argv) {
   int rc = user_main(argc, argv);
@@ -81,5 +107,3 @@ int main(int argc, char **argv) {
 }
 
 #define main user_main
-
-
