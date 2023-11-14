@@ -1,5 +1,13 @@
 #include "simple-multithreader.h"
 #include <assert.h>
+#include <iostream>
+#include <list>
+#include <functional>
+#include <stdlib.h>
+#include <cstring>
+#include <functional>
+#include <pthread.h>
+#include <chrono>
 
 int main(int argc, char** argv) {
   // intialize problem size
