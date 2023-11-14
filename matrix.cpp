@@ -27,7 +27,11 @@ int main(int argc, char** argv) {
     }
   }, numThread);
   // verify the result matrix
-  for(int i=0; i<size; i++) for(int j=0; j<size; j++) assert(C[i][j] == size);
+  for(int i=0; i<size; i++) for(int j=0; j<size; j++) {
+    printf("%d\n",C[i][j] );
+    printf("i : %d, j : %d\n", i, j);
+    assert(C[i][j] == size);
+  }  
   printf("Test Success. \n");
   // cleanup memory
   parallel_for(0, size, [=](int i) {

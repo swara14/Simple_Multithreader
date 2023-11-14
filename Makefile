@@ -1,4 +1,4 @@
-EXE = vector
+EXE = matrix vector
 
 all: clean $(EXE)
 
