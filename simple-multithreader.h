@@ -18,6 +18,11 @@ typedef struct {
 
 void *thread_func(void *ptr) {
     thread_args * t = ((thread_args *) ptr);
+    t->lambda1D;
+    for (int i = t->low; i <= t->high; i++)
+    {
+        t->lambda1D(i);
+    }
     return NULL;
 }
 
@@ -27,9 +32,8 @@ void parallel_for(int low, int high, std::function<void(int)> &&lambda, int NTHR
     int chunk = (high - low )/NTHREADS;
     for (int i=0; i<NTHREADS; i++) {
         args[i].low=i*chunk; 
-        args[i].high = (i == NTHREADS - 1) ? high : (i + 1) * chunk;  // Adjust the high value        
-        args[i].lambda1D = std :: move(lambda);
-
+        args[i].high = (i+1)*chunk;        
+        args[i].lambda1D = lambda;
         pthread_create(&tid[i],NULL,thread_func,(void*) &args[i]);
     }
     for (int i=0; i<NTHREADS; i++) {
