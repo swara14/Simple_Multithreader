@@ -73,10 +73,10 @@ void parallel_for(int low, int high, std::function<void(int)> &&lambda, int NTHR
     }
     long end_time=get_time();
 
-    printf("Start time for vector: %ld\n", start_time);
+    printf("\nStart time for vector: %ld\n", start_time);
     printf("End time for vector: %ld\n", end_time);
     long t1 = end_time-start_time;
-    printf("Total execution time for vector: %ld\n", t1);
+    printf("Total execution time for vector: %ld\n\n", t1);
 }
 
 void parallel_for(int low1, int high1, int low2, int high2, std::function<void(int, int)> &&lambda, int NTHREADS){
@@ -105,9 +105,9 @@ void parallel_for(int low1, int high1, int low2, int high2, std::function<void(i
     }
     long end_time=get_time();
     long t2=end_time-start_time;
-    printf("Start time for matrix: %ld\n", start_time);
+    printf("\nStart time for matrix: %ld\n", start_time);
     printf("End time for matix: %ld\n", end_time);
-    printf("Total execution time for matrix: %ld\n", t2);
+    printf("Total execution time for matrix: %ld\n\n", t2);
 }
 int main(int argc, char **argv) {
   int rc = user_main(argc, argv);
