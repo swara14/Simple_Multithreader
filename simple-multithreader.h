@@ -32,6 +32,7 @@ typedef struct {
 } thread_args_2D;
 
 void *thread_func_1D(void *ptr) {
+    
     thread_args_1D * t = ((thread_args_1D *) ptr);
     for (int i = t->low; i < t->high; i++)
     {
@@ -66,10 +67,16 @@ void parallel_for(int low, int high, std::function<void(int)> &&lambda, int NTHR
             args[i].high = high; 
         }    
         args[i].lambda1D = lambda;
-        pthread_create(&tid[i],NULL,thread_func_1D,(void*) &args[i]);
+        if( pthread_create(&tid[i],NULL,thread_func_1D,(void*) &args[i]) != 0){
+            printf("Error in creating threads\n");
+            exit(1);
+        }
     }
     for (int i=0; i<NTHREADS; i++) {
-        pthread_join(tid[i] , NULL);
+        if( pthread_join(tid[i] , NULL) != 0 ){
+            printf("Error in joining threads\n");
+            exit(1);
+        }
     }
     long end_time=get_time();
 
@@ -84,7 +91,7 @@ void parallel_for(int low1, int high1, int low2, int high2, std::function<void(i
     pthread_t tid[NTHREADS];
     thread_args_2D args[NTHREADS];
     int chunk1 = (high1 - low1 )/NTHREADS;
-    //int chunk2 = (high2 - low2) / NTHREADS;
+    int chunk2 = (high2 - low2) / NTHREADS;
 
     for (int i=0; i<NTHREADS; i++) {
 
@@ -96,12 +103,19 @@ void parallel_for(int low1, int high1, int low2, int high2, std::function<void(i
             args[i].high1 = high1; 
         }
         args[i].lambda2D = lambda;
-        pthread_create(&tid[i],NULL,thread_func_2D,(void*) &args[i]);
+        if( pthread_create(&tid[i],NULL,thread_func_2D,(void*) &args[i]) != 0){
+            printf("Error in creating threads\n"); 
+            exit(1);          
+        }
 
     }
 
     for (int i=0; i<NTHREADS; i++) {
-        pthread_join(tid[i] , NULL);
+        if( pthread_join(tid[i] , NULL) != 0){
+            printf("Error in joining threads\n");
+            exit(1);
+
+        }
     }
     long end_time=get_time();
     long t2=end_time-start_time;
