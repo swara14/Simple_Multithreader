@@ -9,6 +9,8 @@
 #include <time.h>
 #include <sys/time.h>
 
+int user_main(int argc, char **argv);
+
 // current time in milliseconds
 long get_time() {
     struct timeval time, *address_time = &time;
@@ -57,14 +59,14 @@ void *thread_func_2D(void *ptr) {
 void parallel_for(int low, int high, std::function<void(int)> &&lambda, int NTHREADS) {
 
     long start_time = get_time();
-    // array to store thread IDs
+    // array to store thread identifier
     pthread_t tid[NTHREADS];
     // array to store thread arguments
     thread_args_1D args[NTHREADS];
     // calculating the chunk size for each thread
     int chunk = (high - low) / NTHREADS;
 
-    // create and launch threads
+    // create threads
     for (int i = 0; i < NTHREADS; i++) {
         args[i].low = i * chunk;
         args[i].high = (i + 1) * chunk;
@@ -101,7 +103,7 @@ void parallel_for(int low, int high, std::function<void(int)> &&lambda, int NTHR
 void parallel_for(int low1, int high1, int low2, int high2, std::function<void(int, int)> &&lambda, int NTHREADS) {
 
     long start_time = get_time();
-    // array to store thread IDs
+    // array to store thread identifiers
     pthread_t tid[NTHREADS];
     // array to store thread arguments
     thread_args_2D args[NTHREADS];
@@ -109,7 +111,7 @@ void parallel_for(int low1, int high1, int low2, int high2, std::function<void(i
     int chunk1 = (high1 - low1) / NTHREADS;
     int chunk2 = (high2 - low2) / NTHREADS;
 
-    // create and launch threads
+    // create threads
     for (int i = 0; i < NTHREADS; i++) {
         args[i].low1 = i * chunk1;
         args[i].high1 = (i + 1) * chunk1;
