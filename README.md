@@ -4,6 +4,7 @@
 The provided program facilitates the parallelization of computations through multi-threading. It includes functions for 1D (vector) and 2D (matrix) parallel loops, utilizing Pthreads. The code measures and outputs execution times, enhancing performance by applying user-defined lambda functions to indices or pairs in specified ranges concurrently.
 
 <h2>Implementation: </h2>
+ 
   1. get_time():
 Returns the current time in milliseconds using the gettimeofday() function. It converts the seconds and microseconds obtained from the system time into milliseconds and returns the result.
 
