@@ -1,4 +1,4 @@
-<h1>SIMPLE MULTITHREADER: <h3>An Updated SimpleLoader in C</h3></h1>
+<h1>Simple Multithreader: <h3>An Updated SimpleLoader in C</h3></h1>
 
 <h2>Overview: </h2>
 The provided program facilitates the parallelization of computations through multi-threading. It includes functions for 1D (vector) and 2D (matrix) parallel loops, utilizing Pthreads. The code measures and outputs execution times, enhancing performance by applying user-defined lambda functions to indices or pairs in specified ranges concurrently.
